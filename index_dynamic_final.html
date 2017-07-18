@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>MovieDB API Example - Dynamic Rev 1</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <!-- Title for browser & load jquery library -->
+</head>
+<body>
+<!-- Start of the webite end user sees -->
+Developed by: TJ Huels
+<br>
+<h2>This box will auto-magicly return movie titles</h2>
+<br>
+	<!-- Added a text box, search button and one more button for clearing data -->
+   <section id="fetch">
+      <input type="text" placeholder="Enter a movie title" id="term" />
+      <button id="search">Bam!</button><br>
+	  <button id="clear">Clear Data</button>
+   </section>		
+		
+   <!-- Call javascript within HTML --> 
+ <script type="text/javascript" charset="utf-8">
+   
+   var api_key = 'e8a87543e4c31ab638f2268ffbff0db8';
+   
+	<!-- Define 2 variables 1 for API and other for the movie title the user is looking for -->
+	
+    $(document).ready(function (){        
+		
+		<!-- Created a function to set the HTML ID search_resutls to null -->
+		var clearData = function(){
+		document.getElementById("search_results").innerHTML = "";
+		}
+		
+		<!-- Create a function for button select to set movie_title variable equal to the search field -->
+		var formChanged = function(){			
+			var movie_title = document.getElementById("term").value;
+			
+			$.ajax({
+			url: 'https://api.themoviedb.org/3/search/movie?api_key=' + api_key + '&query=' + movie_title,
+			<!-- Used the movieDB API build to understand the URL: https://developers.themoviedb.org/3/search/search-movies -->
+			<!-- Build the JSON call using the base URL + api_key variable + movie_title variable -->
+			dataType: 'jsonp',
+			jsonpCallback: 'testing'
+			}).error(function() {
+			console.log('error')
+			}).done(function(response) {
+			
+			for (var i = 0; i < response.results.length; i++) {
+			 $('#search_results').append('<li>' + response.results[i].title + '</li>');
+			}
+			});	
+			<!-- Found this example from the movie DB API forums: https://www.themoviedb.org/talk/533abee8c3a3680e69007d78 -->	
+			<!-- This links to the following page: http://dev.travisbell.com/play/tmdb.html -->	
+		}
+		
+		<!-- Found this example to trigger a function for the form: https://www.smashingmagazine.com/2012/02/beginners-guide-jquery-based-json-api-clients/#the-full-code -->
+		$('#search').click(formChanged);		
+		$('#term').keyup(function(event){
+		if(event.keyCode == 13){
+		   $('#clear').click(clearData);
+		   formChanged();
+		   <!-- This will invoke the function formChanged and reload the window to show the results -->
+			}
+		});
+
+		$('#clear').click(clearData);
+		<!-- This will invoke the function clearData when Clear button is selected -->		
+			
+	});
+  </script>   
+ <h3>Here are the results:</h3>
+  <hr>
+  <p id="error"></p>
+  <ul id="search_results"></ul>
+  <!-- From the example on movieDB, displays the results of the API call -->
+</body>
+</html>

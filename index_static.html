@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>MovieDB API Example - Static</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <!-- Title for browser & load jquery library -->
+</head>
+<body>
+<!-- Start of the webite end user sees -->
+<br>
+<h2>This magic box will return movie titles</h2>
+<br>
+	
+ <!-- Call javascript within HTML --> 
+ <script type="text/javascript" charset="utf-8">
+   
+	var api_key = 'e8a87543e4c31ab638f2268ffbff0db8';
+	var movie_title = 'Newsies';	
+	<!-- Define 2 variables 1 for API and other for the movie title the user is looking for -->
+
+    $(document).ready(function (){
+        
+		$.ajax({
+        url: 'https://api.themoviedb.org/3/search/movie?api_key=' + api_key + '&query=' + movie_title,
+		<!-- Used the movieDB API build to understand the URL: https://developers.themoviedb.org/3/search/search-movies -->
+		<!-- Build the JSON call using the base URL + api_key variable + movie_title variable -->
+        dataType: 'jsonp',
+        jsonpCallback: 'testing'
+		}).error(function() {
+        console.log('error')
+		}).done(function(response) {
+		for (var i = 0; i < response.results.length; i++) {
+         $('#search_results').append('<li>' + response.results[i].title + '</li>');
+        }
+		});
+	  	<!-- Found this example from the movie DB API forums: https://www.themoviedb.org/talk/533abee8c3a3680e69007d78 -->	
+		<!-- This links to the following page: http://dev.travisbell.com/play/tmdb.html -->	
+	});
+  </script>  
+  <h3>Here are the results:</h3>
+  <hr>
+  <p id="error"></p>
+  <ul id="search_results"></ul>
+  <!-- From the example on movieDB, displays the results of the API call -->
+</body>
+</html>
